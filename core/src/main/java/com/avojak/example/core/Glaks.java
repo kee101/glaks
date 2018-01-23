@@ -1,45 +1,54 @@
 package com.avojak.example.core;
 
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.I18NBundle;
 
+/**
+ * Implementation of {@link ApplicationListener} for Glaks. Wrapper for {@link GlaksGame} to handle dependency
+ * injection.
+ */
 public class Glaks implements ApplicationListener {
-	Texture texture;
-	SpriteBatch batch;
-	float elapsed;
+
+	private Skin skin;
+	private I18NBundle i18nBundle;
+	private Game game;
 
 	@Override
-	public void create () {
-		texture = new Texture(Gdx.files.internal("libgdx-logo.png"));
-		batch = new SpriteBatch();
+	public void create() {
+		// TODO: Looking into using AssetManager instead (https://github.com/libgdx/libgdx/wiki/Managing-your-assets)
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		i18nBundle = I18NBundle.createBundle(Gdx.files.internal("i18n/resources"));
+		game = new GlaksGame(skin, i18nBundle);
+		game.create();
 	}
 
 	@Override
-	public void resize (int width, int height) {
+	public void resize(final int width, final int height) {
+		game.resize(width, height);
 	}
 
 	@Override
-	public void render () {
-		elapsed += Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(texture, 100+100*(float)Math.cos(elapsed), 100+25*(float)Math.sin(elapsed));
-		batch.end();
+	public void render() {
+		game.render();
 	}
 
 	@Override
-	public void pause () {
+	public void pause() {
+		game.pause();
 	}
 
 	@Override
-	public void resume () {
+	public void resume() {
+		game.resume();
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
+		skin.dispose();
+		game.dispose();
 	}
+
 }
