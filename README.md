@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-Maven 3+
-Java 1.8
+* Maven 3+
+* Java 1.8
 
 ## Building
 
