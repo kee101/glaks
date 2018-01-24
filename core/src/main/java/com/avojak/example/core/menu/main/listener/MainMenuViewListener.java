@@ -15,4 +15,6 @@ public interface MainMenuViewListener {
 	 */
 	void onSettingsButtonClicked();
 
+	void onGameButtonClicked(final String name);
+
 }

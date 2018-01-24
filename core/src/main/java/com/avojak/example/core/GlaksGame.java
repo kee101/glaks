@@ -42,6 +42,10 @@ public class GlaksGame extends Game implements MainMenuPresenterListener {
 		mainMenuPresenter = new MainMenuPresenter(mainMenuView);
 		mainMenuPresenter.addListener(this);
 
+		mainMenuPresenter.addGame("Sandbox");
+		mainMenuPresenter.addGame("Frogger");
+		mainMenuPresenter.addGame("Tanks");
+
 		this.setScreen(mainMenuPresenter.getView());
 	}
 

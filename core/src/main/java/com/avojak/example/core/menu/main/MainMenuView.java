@@ -15,4 +15,6 @@ public interface MainMenuView extends Screen {
 	 */
 	void addListener(final MainMenuViewListener listener);
 
+	void addGame(final String name);
+
 }

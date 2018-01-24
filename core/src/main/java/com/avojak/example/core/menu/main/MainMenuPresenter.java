@@ -34,6 +34,13 @@ public class MainMenuPresenter implements MainMenuViewListener {
 		}
 	}
 
+	public void addGame(final String name) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("name cannot be null or empty");
+		}
+		view.addGame(name);
+	}
+
 	@Override
 	public void onExitButtonClicked() {
 		for (final MainMenuPresenterListener listener : listeners) {
@@ -46,6 +53,11 @@ public class MainMenuPresenter implements MainMenuViewListener {
 		for (final MainMenuPresenterListener listener : listeners) {
 			listener.onSettingsButtonClicked();
 		}
+	}
+
+	@Override
+	public void onGameButtonClicked(final String name) {
+
 	}
 
 	public void dispose() {

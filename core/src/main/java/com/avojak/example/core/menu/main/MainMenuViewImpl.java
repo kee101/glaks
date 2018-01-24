@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,6 +23,8 @@ public class MainMenuViewImpl implements MainMenuView {
 
 	private final Stage stage;
 	private final Skin skin;
+
+	private final Table gameGrid;
 
 	private final List<MainMenuViewListener> listeners = new ArrayList<MainMenuViewListener>();
 
@@ -43,18 +46,27 @@ public class MainMenuViewImpl implements MainMenuView {
 		container.setFillParent(true);
 		container.top();
 
+		gameGrid = createGameGrid();
+
 		final Table titleArea = createTitleArea();
-		final Table gameSelectionArea = createGameSelectionArea();
+		final Table gameSelectionArea = createGameSelectionArea(gameGrid);
 		final Table controlArea = createControlArea();
 
 		container.add(titleArea).top().fillX().expandX();
 		container.row();
 		container.add(gameSelectionArea).center().fill().expand();
 		container.row();
-		container.add(controlArea).center().fillX().expandX();
+		container.add(controlArea).bottom().fillX().expandX();
 		container.pack();
 
 		stage.addActor(container);
+	}
+
+	private Table createGameGrid() {
+		final Table table = new Table(skin);
+		table.setBackground(BackgroundColorFactory.get(125, 125, 0, 255));
+
+		return table;
 	}
 
 	private Table createTitleArea() {
@@ -70,10 +82,17 @@ public class MainMenuViewImpl implements MainMenuView {
 		return titleTable;
 	}
 
-	private Table createGameSelectionArea() {
+	private Table createGameSelectionArea(final Table gameGrid) {
 		final Table gameSelectionTable = new Table(skin);
 		gameSelectionTable.setBackground(BackgroundColorFactory.get(0, 0, 0, 255));
+		gameSelectionTable.pad(10, 10, 10, 10);
 
+		final Label gameSelectionLabel = new Label("Select a game:", skin);
+		gameSelectionLabel.setAlignment(1);
+
+		gameSelectionTable.add(gameSelectionLabel).center().fillX().expandX().padBottom(10);
+		gameSelectionTable.row();
+		gameSelectionTable.add(gameGrid).center().fill().expand();
 		gameSelectionTable.pack();
 
 		return gameSelectionTable;
@@ -163,6 +182,35 @@ public class MainMenuViewImpl implements MainMenuView {
 		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
+		}
+	}
+
+	@Override
+	public void addGame(final String name) {
+		final Table gameTable = new Table(skin);
+		final Button gameButton = new TextButton(name, skin);
+		gameButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(final ChangeEvent event, final Actor actor) {
+				Gdx.app.log(getClass().getName(), "Game button clicked [" + name + "]");
+				notifyOnGameButtonClicked(name);
+			}
+		});
+
+		gameTable.add(gameButton).fillX().expandX().pad(10, 10, 10, 10);
+		gameTable.pack();
+
+		// Start a new row for every two games
+		if (gameGrid.getCells().size % 2 == 0) {
+			gameGrid.row();
+		}
+
+		gameGrid.add(gameTable).center().fillX().expandX();
+	}
+
+	private void notifyOnGameButtonClicked(final String name) {
+		for (final MainMenuViewListener listener : listeners) {
+			listener.onGameButtonClicked(name);
 		}
 	}
 
